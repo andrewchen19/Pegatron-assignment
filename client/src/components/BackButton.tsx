@@ -1,6 +1,7 @@
 import { useNavigate, useLocation, useNavigation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { IRootState } from "../store";
+import { resetUser } from "../features/user/userSlice";
 
 const BackButton: React.FC = () => {
   const location = useLocation();
@@ -11,9 +12,12 @@ const BackButton: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   const { isImageUploading } = useSelector((state: IRootState) => state.user);
 
   const navigateHandler = () => {
+    dispatch(resetUser());
     navigate(from);
   };
 
