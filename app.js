@@ -43,7 +43,7 @@ app.get("*", (req, res) => {
 // custom global middleware (after all routes)
 app.use(notFound);
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 const start = async () => {
   try {

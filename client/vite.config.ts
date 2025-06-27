@@ -14,7 +14,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         // Redirect the requests to the target URL
-        target: "http://localhost:5000/api",
+        target: "http://localhost:5001/api",
         // Change the origin of the request to match the target
         changeOrigin: true,
         // Rewrite the path by removing the "/api" prefix
