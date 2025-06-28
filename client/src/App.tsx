@@ -17,7 +17,6 @@ import { store } from "./store";
 
 // React Query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -63,7 +62,6 @@ function App() {
         hideProgressBar
         transition={Zoom}
       />
-      <ReactQueryDevtools initialIsOpen={true} />
     </QueryClientProvider>
   );
 }
