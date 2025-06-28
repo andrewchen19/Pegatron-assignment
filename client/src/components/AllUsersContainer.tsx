@@ -46,6 +46,7 @@ const AllUsersContainer: React.FC = () => {
 
         <div className="flex gap-1">
           <button
+            data-test="grid-button"
             type="button"
             className={activeButton("grid")}
             onClick={() => dispatch(setLayout("grid"))}
@@ -53,6 +54,7 @@ const AllUsersContainer: React.FC = () => {
             <BsFillGridFill />
           </button>
           <button
+            data-test="list-button"
             type="button"
             className={activeButton("list")}
             onClick={() => dispatch(setLayout("list"))}

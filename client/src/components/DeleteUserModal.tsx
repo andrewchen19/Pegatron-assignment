@@ -2,7 +2,7 @@ import DeleteButton from "./DeleteButton";
 
 const DeleteUserModal = () => {
   return (
-    <dialog id="my-modal" className="modal">
+    <dialog data-test="delete-modal" id="my-modal" className="modal">
       <div className="modal-box">
         <h3 className="font-bold text-lg font-montserrat">Warning !</h3>
         <p className="mx-auto py-4 ">
