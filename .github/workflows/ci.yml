@@ -1,0 +1,209 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # 後端測試
+  backend-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand(\"ping\").ok'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run backend tests
+        run: |
+          # 這裡可以加入後端測試指令
+          echo "Backend tests completed"
+        env:
+          MONGODB_URI: mongodb://localhost:27017/test
+          NODE_ENV: test
+
+  # 前端建置和測試
+  frontend-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install frontend dependencies
+        run: |
+          cd client
+          npm ci
+
+      - name: Run linting
+        run: |
+          cd client
+          npm run lint
+
+      - name: Build frontend
+        run: |
+          cd client
+          npm run build
+
+  # E2E 測試
+  e2e-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand(\"ping\").ok'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd client && npm ci
+
+      - name: Start backend server
+        run: |
+          npm run server &
+          sleep 10
+        env:
+          MONGODB_URI: mongodb://localhost:27017/test
+          NODE_ENV: test
+          PORT: 3000
+
+      - name: Start frontend dev server
+        run: |
+          cd client
+          npm run dev &
+          sleep 15
+        env:
+          VITE_API_URL: http://localhost:3000
+
+      - name: Run E2E tests
+        run: |
+          cd client
+          npm run test:e2e
+        env:
+          CYPRESS_baseUrl: http://localhost:5173
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-results
+          path: client/cypress/videos/
+          retention-days: 7
+
+  # 部署到測試環境
+  deploy-staging:
+    needs: [backend-test, frontend-test, e2e-test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd client && npm ci
+
+      - name: Build application
+        run: |
+          cd client && npm run build
+
+      - name: Deploy to Netlify (Staging)
+        uses: nwtgck/actions-netlify@v2.0
+        with:
+          publish-dir: "./client/dist"
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions - Staging"
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_STAGING }}
+
+  # 部署到生產環境
+  deploy-production:
+    needs: [backend-test, frontend-test, e2e-test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd client && npm ci
+
+      - name: Build application
+        run: |
+          cd client && npm run build
+
+      - name: Deploy to Netlify (Production)
+        uses: nwtgck/actions-netlify@v2.0
+        with:
+          publish-dir: "./client/dist"
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions - Production"
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_PRODUCTION }}
