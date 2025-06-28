@@ -43,7 +43,11 @@ const FormFile = ({ label, name, accept, size }: Props) => {
 
       dispatch(setUserImage(src));
     } catch (error) {
-      toast.error(errorMessageHandler(error + "😵"));
+      toast.error(
+        errorMessageHandler(
+          error as { response?: { data?: { msg?: string } } }
+        ) + " 😵"
+      );
     }
 
     dispatch(setImageIsNotUploading());

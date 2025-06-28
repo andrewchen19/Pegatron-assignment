@@ -36,7 +36,11 @@ const DeleteButton = ({ text, size }: Props) => {
         navigate("/");
       }
     } catch (error) {
-      toast.error(errorMessageHandler(error) + " 😵");
+      toast.error(
+        errorMessageHandler(
+          error as { response?: { data?: { msg?: string } } }
+        ) + " 😵"
+      );
     }
 
     setIsLoading(false);
