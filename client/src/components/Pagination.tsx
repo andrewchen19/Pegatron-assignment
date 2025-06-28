@@ -12,17 +12,15 @@ interface LoaderData {
 
 const Pagination: React.FC = () => {
   const { numOfPages, params } = useLoaderData() as LoaderData;
+  const location = useLocation();
+  const { pathname, search } = location;
+  const navigate = useNavigate();
 
   // params got String type, remember to convert type
   const page = parseInt(params?.page) || 1;
 
   // conditional rendering
   if (numOfPages < 2) return null;
-
-  const location = useLocation();
-  const { pathname, search } = location;
-
-  const navigate = useNavigate();
 
   // click page button
   const pageChangeHandler = (number: number) => {
