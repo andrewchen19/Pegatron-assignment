@@ -5,12 +5,12 @@ import { AllUsers, CreateUser, EditUser, Error, Layout } from "./pages";
 import { ToastContainer, Zoom } from "react-toastify";
 
 // loaders
-import { loader as allUsersLoader } from "./components/AllUsersFilter";
-import { loader as editUserLoader } from "./pages/EditUser";
+import { loader as allUsersLoader } from "./loaders/allUsersLoader";
+import { loader as editUserLoader } from "./loaders/editUserLoader";
 
 // actions
-import { action as createUserAction } from "./components/CreateUserFilter";
-import { action as editUserAction } from "./components/EditUserFilter";
+import { action as createUserAction } from "./actions/createUserAction";
+import { action as editUserAction } from "./actions/editUserAction";
 
 // store
 import { store } from "./store";

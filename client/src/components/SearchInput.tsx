@@ -1,6 +1,5 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { debounce } from "../utils/debounce";
 
 interface Props {
   label: string;
@@ -15,8 +14,11 @@ const SearchInput = ({ label, name, value, size }: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const debouncedSearchHandler = useCallback(
-    debounce((value: string) => {
+  let timeoutId: NodeJS.Timeout;
+
+  const debouncedSearchHandler = (value: string) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
       const { pathname, search } = location;
 
       const searchParams = new URLSearchParams(search);
@@ -24,9 +26,8 @@ const SearchInput = ({ label, name, value, size }: Props) => {
       searchParams.set("search", value);
       searchParams.set("page", "");
       navigate(`${pathname}?${searchParams.toString()}`);
-    }, 700),
-    [location]
-  );
+    }, 700);
+  };
 
   const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
