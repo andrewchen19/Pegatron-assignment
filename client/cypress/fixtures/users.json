@@ -1,0 +1,56 @@
+{
+  "users": [
+    {
+      "_id": "1",
+      "name": "John Doe",
+      "gender": "Male",
+      "birthday": "1990-01-01",
+      "occupation": "Engineer",
+      "phoneNumber": "0987654321",
+      "image": "https://res.cloudinary.com/dhrtfibhx/image/upload/v1721266453/pegatron/default_wozlch.jpg"
+    },
+    {
+      "_id": "2",
+      "name": "Jane Smith",
+      "gender": "Female",
+      "birthday": "1994-05-15",
+      "occupation": "Teacher",
+      "phoneNumber": "0926453761",
+      "image": "https://res.cloudinary.com/dhrtfibhx/image/upload/v1721266453/pegatron/default_wozlch.jpg"
+    },
+    {
+      "_id": "3",
+      "name": "Bob Johnson",
+      "gender": "Male",
+      "birthday": "1998-12-10",
+      "occupation": "Student",
+      "phoneNumber": "0987656789",
+      "image": "https://res.cloudinary.com/dhrtfibhx/image/upload/v1721266453/pegatron/default_wozlch.jpg"
+    }
+  ],
+  "singleUser": {
+    "_id": "1",
+    "name": "John Doe",
+    "gender": "Male",
+    "birthday": "1990-01-01",
+    "occupation": "Engineer",
+    "phoneNumber": "0987654321",
+    "image": "https://res.cloudinary.com/dhrtfibhx/image/upload/v1721266453/pegatron/default_wozlch.jpg"
+  },
+  "newUser": {
+    "name": "New User",
+    "gender": "Female",
+    "birthday": "2002-03-20",
+    "occupation": "Unemployed",
+    "phoneNumber": "0912345678",
+    "image": "https://res.cloudinary.com/dhrtfibhx/image/upload/v1721266453/pegatron/default_wozlch.jpg"
+  },
+  "updatedUser": {
+    "name": "John Updated",
+    "gender": "Male",
+    "birthday": "1990-01-01",
+    "occupation": "Engineer",
+    "phoneNumber": "0987654321",
+    "image": "https://res.cloudinary.com/dhrtfibhx/image/upload/v1721266453/pegatron/default_wozlch.jpg"
+  }
+}
